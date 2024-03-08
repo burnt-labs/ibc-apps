@@ -1,6 +1,7 @@
 package v2
 
 import (
+	sdkmath "cosmossdk.io/math"
 	"fmt"
 
 	"github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/exported"
@@ -17,13 +18,14 @@ import (
 // and managed by the x/params modules and stores them directly into the x/packetforward
 // module state.
 func Migrate(
-	ctx sdk.Context,
+	_ sdk.Context,
 	store storetypes.KVStore,
-	legacySubspace exported.Subspace,
+	_ exported.Subspace,
 	cdc codec.BinaryCodec,
 ) error {
 	var currParams types.Params
-	legacySubspace.GetParamSet(ctx, &currParams)
+	currParams.FeePercentage = sdkmath.LegacyNewDec(0)
+	//legacySubspace.GetParamSet(ctx, &currParams)
 
 	if err := currParams.Validate(); err != nil {
 		return err
